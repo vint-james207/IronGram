@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.time.LocalDateTime;
+
 
 /**
  * Created by jamesyburr on 6/28/16.
@@ -41,14 +42,34 @@ public class IronGramRestController {
     }
 
     @RequestMapping(path = "/logout", method = RequestMethod.POST)
-    public void logout(HttpSession session) {
+    public String logout(HttpSession session) {
         session.invalidate();
+        return "redirect:/";
     }
 
     @RequestMapping(path = "/photos", method = RequestMethod.GET)
     public Iterable<Photo> getPhotos(HttpSession session) {
         String username = (String) session.getAttribute("username");
         User user = users.findFirstByName(username);
-        return photos.findByRecipient(user);
+        Iterable<Photo> recipPhoto = photos.findByRecipient(user);
+
+        for (Photo photo : recipPhoto) {
+            if (photo.getDt() == null) {
+                photo.setDt(LocalDateTime.now());
+                photos.save(photo);
+            }
+            else if(LocalDateTime.now().isAfter(photo.getDt().plusSeconds(photo.getDeleteTime()))) {
+                File f = new File("public/photos/" + photo.getFilename());
+                f.delete();
+                photos.delete(photo);
+            }
+        }
+         return photos.findByRecipient(user);
+    }
+    @RequestMapping(path = "/public-photos", method = RequestMethod.GET)
+    public Iterable<Photo> publicPhotos(String username) {
+        User user = users.findFirstByName(username);
+        return photos.findByIsPublicAndSender(true, user);
+
     }
 }
