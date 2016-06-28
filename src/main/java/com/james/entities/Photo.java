@@ -30,12 +30,12 @@ public class Photo {
 
     boolean isPublic = false;
 
-    public Photo(User sender, User recipient, String filename, long deleteTime, boolean isPublc) {
+    public Photo(User sender, User recipient, String filename, long deleteTime, boolean isPublic) {
         this.sender = sender;
         this.recipient = recipient;
         this.filename = filename;
         this.deleteTime = deleteTime;
-        this.isPublic = isPublc;
+        this.isPublic = isPublic;
     }
 
     public Photo(User sender, User recipient, String filename) {
