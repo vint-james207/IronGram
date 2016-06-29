@@ -26,11 +26,11 @@ public class Photo {
 
     LocalDateTime dt;
 
-    long deleteTime;
+    int deleteTime;
 
     boolean isPublic = false;
 
-    public Photo(User sender, User recipient, String filename, long deleteTime, boolean isPublic) {
+    public Photo(User sender, User recipient, String filename, int deleteTime, boolean isPublic) {
         this.sender = sender;
         this.recipient = recipient;
         this.filename = filename;
@@ -91,11 +91,15 @@ public class Photo {
         return deleteTime;
     }
 
-    public void setDeleteTime(long deleteTime) {
+    public void setDeleteTime(int deleteTime) {
         this.deleteTime = deleteTime;
     }
 
-    public Photo(boolean isPublic) {
-        this.isPublic = isPublic;
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
     }
 }
